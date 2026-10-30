@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta name="robots" content="noindex, nofollow"><!-- TOGLIERE quando il sito e' pronto per essere pubblico -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ruben Quaranta – Camera Studio</title>
+<link rel="icon" href="data:,"><!-- nessuna icona per ora: evita la richiesta di favicon.ico -->
+<link rel="preload" href="contenuti.js" as="script">
+<style>
+:root{
+  --bg:#ffffff; --red:#d41f18; --red-soft:rgba(212,31,24,.55); --line:rgba(212,31,24,.18);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Helvetica Neue",Arial,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;height:100%;background:var(--bg);color:var(--red);font-family:var(--font);overflow:hidden;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px;border-radius:6px}
+
+header{position:fixed;inset:0 0 auto 0;padding:calc(24px + env(safe-area-inset-top,0px)) 32px 0;display:flex;justify-content:space-between;font-size:15px}
+footer{position:fixed;inset:auto 0 0 0;padding:0 32px calc(24px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;font-size:14px}
+footer a{color:inherit;text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* Home: desktop con cartelle e dock */
+main{height:100%;display:flex;align-items:center;justify-content:center}
+.dock{display:flex;align-items:flex-end;gap:clamp(8px,3vw,48px);padding:0 16px}
+.folder{position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;width:clamp(90px,14vw,180px);transform-origin:50% 100%;transition:transform .14s ease-out}
+.folder svg{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 14px rgba(150,20,10,.2))}
+.folder .label{font-size:clamp(12px,1.5vw,15px);text-align:center;line-height:1.25}
+.folder .count{color:var(--red);font-size:12px}
+
+/* Cartella della home: a riposo è una cartella normale, al mouse le foto escono a ventaglio */
+.gf{position:relative;display:block;width:100%;aspect-ratio:120/96}
+.gf>i{position:absolute;display:block;-webkit-backdrop-filter:blur(16px) saturate(1.15) brightness(1.18);backdrop-filter:blur(16px) saturate(1.15) brightness(1.18)}
+.gf .t{left:0;top:0;width:42%;height:26%;border-radius:16px 16px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(226,40,34,.42));border:1px solid rgba(255,255,255,.75);border-bottom:0;box-shadow:inset 0 1.5px 1px rgba(255,255,255,.9)}
+.gf .b{left:0;right:0;top:12%;bottom:0;border-radius:6px 18px 18px 18px;background:linear-gradient(180deg,rgba(235,45,38,.5),rgba(200,20,16,.36));border:1px solid rgba(255,255,255,.65);box-shadow:inset 0 1.5px 1px rgba(255,255,255,.8),0 12px 28px rgba(150,20,10,.28)}
+.gf .f{left:0;right:0;top:32%;bottom:0;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.62) 0%,rgba(255,92,86,.45) 30%,rgba(222,32,26,.58) 100%);border:1px solid rgba(255,255,255,.8);box-shadow:inset 0 2px 1.5px rgba(255,255,255,.95),inset 0 -2px 4px rgba(255,255,255,.4),0 -2px 10px rgba(150,20,10,.12)}
+.gf .f::after{content:"";position:absolute;left:6%;right:6%;top:4%;height:20%;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,0))}
+.folder .label,.folder .count{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:2px 12px;border-radius:999px;box-shadow:0 1px 6px rgba(0,0,0,.08)}
+header>*,footer>*{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:3px 12px;border-radius:999px}
+/* Foto sparse sullo sfondo */
+main{position:relative;z-index:1;pointer-events:none}
+.dock{pointer-events:auto}
+.scatter{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+/* posizione, inclinazione e dimensione passano solo da transform: le animazioni non ricalcolano l'impaginazione */
+.sp{--x:0px;--y:0px;--s:1;--r:0deg;left:0;top:0;transform:translate(var(--x),var(--y)) rotate(calc(var(--r) * var(--rk,1))) scale(var(--s));position:absolute;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0;border:0;background:none;font:inherit;color:var(--red);pointer-events:auto;cursor:pointer;text-align:center;
+  opacity:0;animation:spIn .7s ease var(--dl,0s) forwards}
+.sp img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;box-shadow:0 3px 12px rgba(0,0,0,.22);transition:transform .2s ease,box-shadow .2s}
+.sp span{background:rgba(255,255,255,.88);max-width:100%;font-size:12px;line-height:1.25;padding:2px 7px;border-radius:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .15s,color .15s}
+.sp:hover,.sp:focus-visible{z-index:999!important}
+.sp:hover{--rk:0}
+.sp:hover img{transform:scale(1.04);box-shadow:0 10px 26px rgba(0,0,0,.3)}
+.sp:hover span,.sp:focus-visible span{background:var(--red);color:#fff;overflow:visible;max-width:none}
+header,footer{z-index:2;pointer-events:none}footer a{pointer-events:auto}
+@media (max-width:640px){.sp span{font-size:10px;padding:1px 4px}}
+@keyframes spIn{to{opacity:1}}
+
+/* Finestra stile Finder */
+.win{position:fixed;left:50%;top:50%;width:min(980px,94vw);height:min(620px,82vh);margin:0;transform:translate(-50%,-50%) scale(.96);opacity:0;visibility:hidden;
+  background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 24px 70px rgba(150,20,10,.18);display:flex;flex-direction:column;overflow:hidden;
+  transition:opacity .25s ease,transform .25s ease,visibility 0s .25s;z-index:5}
+.win.on{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1);transition:opacity .25s ease,transform .25s ease}
+.tb{display:flex;align-items:center;gap:16px;padding:14px 16px;border-bottom:1px solid var(--line);font-size:14px}
+.lights{display:flex;gap:8px}
+.lights button{width:13px;height:13px;border-radius:50%;display:grid;place-items:center;font-size:9px;line-height:1;color:rgba(0,0,0,.6);border:1px solid rgba(0,0,0,.12)}
+.lights button span{opacity:0}
+.lights:hover button span,.lights:focus-within button span{opacity:1}
+.r{background:#ff5f57}.g{background:#28c840}
+.arrow{width:28px;height:24px;display:grid;place-items:center;border-radius:6px;color:var(--red)}
+.arrow:hover:not(:disabled){background:rgba(212,31,24,.1)}
+.arrow[hidden]{display:none}
+.tb .title{flex:1;text-align:center;margin-right:var(--tm,74px);font-weight:600}
+.wrap{flex:1;display:flex;min-height:0}
+.side{width:176px;flex:none;border-right:1px solid var(--line);padding:14px 10px;overflow:auto;display:flex;flex-direction:column;gap:2px;background:rgba(212,31,24,.025)}
+.side h4{font-size:11px;font-weight:500;color:var(--red-soft);padding:2px 10px 6px;letter-spacing:.02em}
+.side button{display:flex;align-items:center;gap:9px;padding:6px 10px;border-radius:7px;font-size:14px;text-align:left;color:var(--red);white-space:nowrap}
+.side button svg{width:18px;height:auto;flex:none}
+.side button:hover{background:rgba(212,31,24,.07)}
+.side button.on{background:rgba(212,31,24,.14);font-weight:600}
+.body{flex:1;overflow:auto;padding:20px}
+
+/* Vista icone: parte dall'alto a sinistra */
+.grid{display:flex;flex-wrap:wrap;gap:22px 18px;align-content:flex-start;justify-content:flex-start}
+.item{width:128px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;text-align:center;line-height:1.25}
+.item svg{width:84px;height:auto}
+.item .thumb{width:116px;aspect-ratio:4/5;background-size:cover;background-position:center;border-radius:4px;overflow:hidden;box-shadow:0 4px 12px rgba(150,20,10,.18)}
+.item .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.item:hover .t,.row:hover .t{background:var(--red);color:#fff}
+.t{padding:1px 6px;border-radius:5px}
+.when{color:var(--red-soft);font-size:11px}
+
+/* Cartella con la foto di copertina che esce */
+.pf{position:relative;display:block;width:112px;margin-top:14px;aspect-ratio:120/96;filter:drop-shadow(0 6px 10px rgba(150,20,10,.22))}
+.pf svg,.item .pf svg,.item.fold .pf svg,.row .pf svg{position:absolute;inset:0;width:100%;max-width:none;height:100%;filter:none}
+.pf .ph{position:absolute;left:13%;right:13%;top:-14%;height:66%;background-size:cover;background-position:center;border:3px solid #fff;border-radius:3px;transform:rotate(-3deg);box-shadow:0 2px 6px rgba(0,0,0,.25);transition:transform .2s ease}
+.item:hover .pf .ph,.row:hover .pf .ph{transform:rotate(-1deg) translateY(-6px)}
+.row .pf{width:30px;margin-top:0;filter:none}
+.row .pf .ph{border-width:1.5px;box-shadow:none}
+
+/* Vista elenco */
+.list{display:flex;flex-direction:column;font-size:14px}
+.row{display:grid;grid-template-columns:36px 1fr 120px;align-items:center;gap:12px;padding:5px 8px;border-radius:6px;text-align:left}
+.row:nth-child(even){background:rgba(212,31,24,.04)}
+.row:hover{background:rgba(212,31,24,.1)}
+.row.head{font-size:12px;color:var(--red-soft);border-bottom:1px solid var(--line);border-radius:0;pointer-events:none;background:none}
+.row .ic{width:24px;height:30px;border-radius:3px;background-size:cover;background-position:center;overflow:hidden;display:block}
+.row .ic img{width:100%;height:100%;object-fit:cover;display:block}
+.row svg{width:28px;height:auto}
+.row .t{padding:0}
+.row .k{color:var(--red-soft)}
+
+/* Foto a schermo intero */
+.lb{position:fixed;inset:0;z-index:10;background:#fff;display:none;align-items:center;justify-content:center}
+.lb.on{display:flex}
+.lb .pic{height:min(80vh,calc(88vw*1.25));aspect-ratio:4/5;background-size:cover;background-position:center;border-radius:4px}
+.lb .pic img{width:100%;height:100%;object-fit:contain;display:block}
+.lb .pic.real{aspect-ratio:auto;height:auto;background:none;border-radius:0}
+.lb .pic.real img{width:auto;height:auto;max-width:min(92vw,1600px);max-height:86vh}
+.lb .nav{position:absolute;top:50%;margin-top:-30px;font-size:42px;padding:12px 18px;line-height:1}
+.lb .prev{left:8px}.lb .next{right:8px}
+.lb .close{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:20px;padding:10px;line-height:0;border-radius:8px}
+.lb .close:hover{background:rgba(212,31,24,.1)}
+.lb .cap{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom,0px));font-size:14px}
+
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important}.sp{animation:none;opacity:1}}
+@media (max-width:560px){.dock{flex-wrap:wrap;justify-content:center;row-gap:24px}header,footer{padding-left:20px;padding-right:20px}.row{grid-template-columns:36px 1fr}.row .k{display:none}}
+/* ---- Adattamento touch e telefono: il desktop resta invariato ---- */
+@media (hover:none),(pointer:coarse){
+  html,body{-webkit-tap-highlight-color:transparent}
+  .folder:active{transform:scale(1.12)}
+  .item:active .thumb,.item:active svg,.row:active{transform:scale(.96)}
+  .lights{gap:16px}
+  .lights button{position:relative;width:20px;height:20px;font-size:12px}
+  .lights button span{opacity:1}
+  .lights button::after{content:"";position:absolute;inset:-9px}
+  .arrow{width:44px;height:44px}
+  .tb{gap:8px}
+  .lb .nav{padding:22px}
+  .lb .close{padding:14px;right:14px}
+}
+@media (max-width:640px){
+  .win{left:0;top:0;width:100%;height:100%;border:0;border-radius:0;box-shadow:none;transform:translateY(16px)}
+  .win.on{transform:none}
+  .tb{padding:calc(10px + env(safe-area-inset-top,0px)) 12px 10px 16px}
+  .tb .title{margin-right:0;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+  .body{padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));overscroll-behavior:contain}
+  .grid{gap:20px 10px}
+  .item{width:calc((100% - 20px)/3)}
+  .item .thumb{width:100%}
+  .item svg{width:72px}
+  .item.fold{width:calc((100% - 30px)/4);font-size:11px}
+  .item.fold .pf{width:100%;max-width:72px}
+  .item.fold .when{font-size:10px}
+  .item.fold .t{padding:1px 3px;word-break:break-word}
+  .dock{display:grid;grid-template-columns:repeat(2,1fr);gap:36px 24px;width:100%;max-width:340px;padding:0 24px;align-items:end}
+  .folder{width:min(160px,100%);justify-self:center}
+  .folder .label{font-size:15px}
+  .folder .count{font-size:13px}
+  .folder:last-child:nth-child(odd){grid-column:1/-1}
+}
+/* Home: una sola cartella al centro */
+.dock{justify-content:center}
+.folder{width:clamp(170px,21vw,270px)}
+.folder .label{font-size:clamp(15px,1.8vw,20px)}
+@media (max-width:640px){
+  .dock{display:flex;max-width:none;padding:0}
+  .folder{width:210px}
+  .folder .label{font-size:18px}
+  .win{width:100vw}
+  .wrap{flex-direction:column}
+  .side{width:auto;flex-direction:row;border-right:0;border-bottom:1px solid var(--line);padding:8px 10px;overflow-x:auto;gap:6px;flex:none}
+  .side h4,.side button svg{display:none}
+  .side button{padding:6px 12px;font-size:13px;border:1px solid var(--line);border-radius:999px}
+  .side button.on{background:var(--red);color:#fff;border-color:var(--red)}
+}
+#home .count{display:none}
+#home .label{background:rgba(255,255,255,.85);padding:5px 20px;font-weight:600;box-shadow:0 2px 12px rgba(0,0,0,.12)}
+footer>.fl{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0;border-radius:0;display:flex;gap:8px}
+footer>.fl>*{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:3px 12px;border-radius:999px}
+.mode{display:flex;gap:2px;padding:3px!important;pointer-events:auto;font-size:11px;letter-spacing:.08em}
+.mode button{padding:3px 11px;border-radius:999px;color:var(--red);font-size:inherit;letter-spacing:inherit}
+.mode button.on{background:var(--red);color:#fff}
+.sp{transition:transform .7s cubic-bezier(.3,.8,.2,1)}
+/* la foto compare solo quando e' pronta, cosi' non si vede la cornice vuota */
+.sp{animation-play-state:paused}.sp.ok{animation-play-state:running}
+@media (max-width:640px){.mode{font-size:9px}.mode button{padding:3px 8px}footer>.fl{gap:5px}footer>.fl>*{padding:3px 8px;font-size:12px}}
+
+/* Tipografie agli angoli piu' evidenti */
+header{font-size:clamp(16px,1.5vw,21px);font-weight:600;letter-spacing:.01em}
+footer{font-size:clamp(14px,1.2vw,17px);font-weight:600}
+header>*,footer>.fl>*,footer>*{padding:6px 16px}
+footer a{color:inherit;text-decoration:none}
+@media (max-width:640px){header{font-size:16px}footer>.fl>*{font-size:13px;padding:5px 11px}footer .ft{display:none}}
+
+/* Info nella barra laterale */
+.side .info{margin-top:auto;padding:14px 10px 4px;font-size:12px;line-height:1.5;border-top:1px solid var(--line)}
+.side .info p{margin:0 0 10px}
+.ct{display:flex;flex-direction:column;gap:3px}
+.ct a{color:inherit;font-weight:600;text-decoration:none;word-break:break-all}
+.ct a:hover{text-decoration:underline}
+.side .infobtn{margin-top:10px}
+.side .infobtn svg{width:18px;height:18px;flex:none}
+.side .info .ct a{font-size:11px;word-break:normal;overflow-wrap:normal;white-space:nowrap}
+.side .info .cp{margin-top:10px;font-size:10.5px;opacity:.8;line-height:1.4}
+.infopage{max-width:700px;font-size:15px;line-height:1.65;padding-bottom:20px}.infopage h2{font-size:34px;font-weight:600;margin:0 0 14px;letter-spacing:-.01em}
+.infopage p{margin:0 0 18px}.infopage .en{font-style:italic;opacity:.9}
+.infopage .ct.big{font-size:clamp(20px,2.6vw,28px);gap:4px;margin:26px 0 30px}
+.infopage .legal{font-size:11px;line-height:1.5;opacity:.8;margin-top:34px;border-top:1px solid var(--line);padding-top:14px}
+.win .infopage .legal{border-top-color:rgba(255,255,255,.3)}
+@media (max-width:640px){.side .info{display:none}.side .infobtn svg{display:none}}
+
+/* Foto a schermo intero: anteprime laterali (desktop) o fila sotto (telefono) */
+.ghost{position:absolute;top:50%;height:60vh;width:18vw;transform:translateY(-50%);object-fit:cover;opacity:.28;cursor:pointer;border-radius:3px;display:none;transition:opacity .2s}
+.ghost:hover{opacity:.55}
+.gl{left:2vw}.gr{right:2vw}
+.strip{position:absolute;left:0;right:0;bottom:calc(52px + env(safe-area-inset-bottom,0px));display:none;gap:6px;padding:0 16px;overflow-x:auto;justify-content:flex-start;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.strip button{flex:none;width:44px;height:55px;opacity:.4;border-radius:3px;overflow:hidden;transition:opacity .2s}
+.strip button.on{opacity:1;outline:2px solid var(--red);outline-offset:1px}
+.strip img{width:100%;height:100%;object-fit:cover;display:block}
+@media (min-width:900px){
+  .lb.multi .ghost{display:block}
+  .lb.multi .nav{display:none}
+  .lb .pic.real img{max-width:56vw}
+}
+@media (max-width:899px){
+  .lb.multi .strip{display:flex}
+  .lb .pic.real img{max-height:68vh}
+}
+
+/* Finestra in rosso */
+.win{background:var(--red);color:#fff;border-color:rgba(255,255,255,.3);box-shadow:0 24px 70px rgba(110,10,5,.45)}
+.win .tb{border-bottom-color:rgba(255,255,255,.22)}
+.win .lights button{border-color:rgba(255,255,255,.7)}
+.win .arrow{color:#fff}.win .arrow:hover:not(:disabled){background:rgba(255,255,255,.18)}
+.win .side{background:rgba(0,0,0,.14);border-right-color:rgba(255,255,255,.22)}
+.win .side h4{color:rgba(255,255,255,.7)}
+.win .side button{color:#fff}.win .side button:hover{background:rgba(255,255,255,.14)}
+.win .side button.on{background:#fff;color:var(--red)}
+.win .side svg path,.win .side svg rect{fill:#fff}
+.win .side button.on svg path,.win .side button.on svg rect{fill:var(--red)}
+.win .side .info{border-top-color:rgba(255,255,255,.22)}
+.win .item .thumb{box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.win .item:hover .t,.win .row:hover .t{background:#fff;color:var(--red)}
+.win .when,.win .row .k,.win .row.head{color:rgba(255,255,255,.75)}
+.win .row:nth-child(even){background:rgba(255,255,255,.07)}.win .row:hover{background:rgba(255,255,255,.16)}
+.win .row.head{border-bottom-color:rgba(255,255,255,.25)}
+.win .pf{filter:drop-shadow(0 6px 10px rgba(0,0,0,.28))}
+.win .pf svg:first-child path{fill:rgba(255,255,255,.6)}
+.win .pf svg:last-child rect:first-child{fill:rgba(255,255,255,.95)}
+.win .pf svg:last-child rect:last-child{fill:#fff;opacity:.6}
+@media (max-width:640px){.win .side{background:rgba(0,0,0,.14)}.win .side button{border-color:rgba(255,255,255,.45)}.win .side button.on{background:#fff;color:var(--red);border-color:#fff}}
+
+/* Link e PDF dentro un progetto */
+.thumb.doc,.ic.doc{display:grid;place-items:center;background:#fff;border:1px solid var(--line);color:var(--red);font-weight:700;letter-spacing:.06em;font-size:13px}
+.ic.doc{font-size:7px;letter-spacing:0}
+.win .thumb.doc,.win .ic.doc{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.5);color:#fff}
+
+/* Telefono: foto e miniature non si sovrappongono */
+@media (max-width:899px){
+  .lb.multi .pic{position:absolute;top:calc(56px + env(safe-area-inset-top,0px));bottom:calc(124px + env(safe-area-inset-bottom,0px));left:0;right:0;height:auto;aspect-ratio:auto;display:flex;align-items:center;justify-content:center}
+  .lb.multi .pic.real img{max-height:100%;max-width:92vw;width:auto;height:auto;object-fit:contain}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff7a6b"/><stop offset="1" stop-color="#e0281d"/></linearGradient>
+    <linearGradient id="fb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8493c"/><stop offset="1" stop-color="#b81a11"/></linearGradient>
+  </defs>
+</svg>
+
+<header><span>Ruben Quaranta</span><span>Camera Studio</span></header>
+<main><div class="dock" id="home" role="list"></div></main>
+<footer><div class="fl"><a href="https://instagram.com/ruben.quaranta" target="_blank" rel="noopener">@ruben.quaranta</a><span>Roma</span></div><div class="mode" role="group" aria-label="Disposizione delle foto"><button data-m="random">RANDOM</button><button data-m="order">ORDER</button></div></footer>
+
+<div class="win" id="win" role="dialog" aria-label="Cartella">
+  <div class="tb">
+    <div class="lights">
+      <button class="r" id="bClose" aria-label="Chiudi"><span>✕</span></button>
+      <button class="g" id="bView" aria-label="Cambia vista: elenco o miniature"><span>▤</span></button>
+    </div>
+    <button class="arrow" id="bBack" aria-label="Indietro"><svg width="10" height="16" viewBox="0 0 10 16" aria-hidden="true"><path d="M8 2 2 8l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="title" id="title"></div>
+  </div>
+  <div class="wrap"><nav class="side" id="side" aria-label="Categorie"></nav><div class="body" id="body"></div></div>
+</div>
+
+<div class="lb" id="lb">
+  <button class="close" id="lbx" aria-label="Chiudi"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <button class="nav prev" id="lbp" aria-label="Foto precedente">‹</button>
+  <div class="pic" id="lbpic"></div>
+  <button class="nav next" id="lbn" aria-label="Foto successiva">›</button>
+  <img class="ghost gl" id="lbgl" alt="" aria-hidden="true">
+  <img class="ghost gr" id="lbgr" alt="" aria-hidden="true">
+  <div class="strip" id="lbstrip"></div>
+  <div class="cap" id="lbcap"></div>
+</div>
+
+<script src="contenuti.js"></script>
+<script>
+const PLACEHOLDERS = 7;   // segnaposto se un progetto non ha ancora foto
+const MESI = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+const fmtDate = d => { if(!d) return ''; const [y,m] = d.split('-'); return m ? MESI[+m-1] + ' ' + y : y; };
+/* Normalizza i dati: foto come stringhe o oggetti, progetti dal più recente */
+CATEGORIES.forEach(c => {
+  c.projects.forEach(p => { p.photos = (p.photos||[]).map(x => typeof x === 'string' ? {src:x, thumb:x} : x); p.date = p.date || ''; });
+  c.projects.sort((x,y) => y.date.localeCompare(x.date));
+});
+
+const $ = id => document.getElementById(id);
+const folderSVG = `<svg viewBox="0 0 120 96" aria-hidden="true">
+  <path d="M6 14a8 8 0 0 1 8-8h27l9 9h56a8 8 0 0 1 8 8v62a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8z" fill="url(#fb)"/>
+  <rect x="6" y="26" width="108" height="64" rx="8" fill="url(#fg)"/>
+  <rect x="6" y="26" width="108" height="3" rx="1.5" fill="#fff" opacity=".35"/></svg>`;
+
+const folderBack = `<svg viewBox="0 0 120 96" aria-hidden="true"><path d="M6 14a8 8 0 0 1 8-8h27l9 9h56a8 8 0 0 1 8 8v62a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8z" fill="url(#fb)"/></svg>`;
+const folderFront = `<svg viewBox="0 0 120 96" aria-hidden="true"><rect x="6" y="26" width="108" height="64" rx="8" fill="url(#fg)"/><rect x="6" y="26" width="108" height="3" rx="1.5" fill="#fff" opacity=".35"/></svg>`;
+function coverFolder(){
+  return `<span class="pf">${folderBack}${folderFront}</span>`;
+}
+
+const stackHTML = () => `<span class="gf" aria-hidden="true"><i class="t"></i><i class="b"></i><i class="f"></i></span>`;
+
+/* Home con effetto dock */
+const home = $('home');
+{
+  const b = document.createElement('button');
+  b.className = 'folder'; b.setAttribute('role','listitem');
+  b.innerHTML = stackHTML() + `<span class="label">Portfolio</span><span class="count">${CATEGORIES.length} cartelle</span>`;
+  b.onclick = () => openCategory(0);
+  home.appendChild(b);
+}
+
+/* Effetto dock: la cartella sotto il mouse cresce molto, le vicine appena */
+const folders = [...home.querySelectorAll('.folder')];
+/* un calcolo per fotogramma: prima si leggono le posizioni, poi si scrivono le scale */
+const canHover = matchMedia('(hover:hover)');
+let dockX = null, dockRaf = 0;
+home.addEventListener('mousemove', e => {
+  if(!canHover.matches) return;
+  dockX = e.clientX;
+  if(!dockRaf) dockRaf = requestAnimationFrame(() => {
+    dockRaf = 0; if(dockX === null) return;
+    const cx = folders.map(el => { const r = el.getBoundingClientRect(); return r.left + r.width/2; });
+    folders.forEach((el,i) => {
+      const d = dockX - cx[i], s = 1 + 0.12*Math.exp(-(d*d)/(2*170*170));
+      el.style.transform = `scale(${s.toFixed(3)})`;
+      el.style.zIndex = s > 1.15 ? 2 : 1;
+    });
+  });
+});
+home.addEventListener('mouseleave', () => { dockX = null; folders.forEach(el => { el.style.transform = ''; el.style.zIndex = ''; }); });
+
+/* Finestra */
+const win = $('win'), body = $('body');
+const mq = matchMedia('(max-width:640px)');
+document.addEventListener('touchstart', () => {}, {passive:true}); // abilita :active su iOS
+let nav = {cat:null, proj:null, skip:false}, view = 'grid', photos = [], idx = 0;
+/* Se la categoria ha un solo progetto, si apre direttamente dentro */
+function openCategory(i){
+  view = 'grid';
+  nav = CATEGORIES[i].projects.length === 1 ? {cat:i, proj:0, skip:true} : {cat:i, proj:null, skip:false};
+  openWin();
+}
+
+const side = $('side');
+side.innerHTML = '<h4>Portfolio</h4>';
+CATEGORIES.forEach((c,i) => {
+  const b = document.createElement('button');
+  b.innerHTML = folderSVG + '<span></span>';
+  b.lastChild.textContent = c.name;
+  b.onclick = () => { view = 'grid'; selectCategory(i); };
+  side.appendChild(b);
+});
+const SITE_ = (typeof SITE !== 'undefined') ? SITE : {};
+{ const fl = document.querySelector('footer .fl');
+  if(SITE_.email) fl.insertAdjacentHTML('beforeend', `<a class="ft" href="mailto:${SITE_.email}">${SITE_.email}</a>`);
+  if(SITE_.phone) fl.insertAdjacentHTML('beforeend', `<a class="ft" href="tel:${SITE_.phone.replace(/\s+/g,'')}">${SITE_.phone}</a>`); }
+function contactsHTML(){
+  const L = [];
+  if(SITE_.phone) L.push(`<a href="tel:${SITE_.phone.replace(/\s+/g,'')}">${SITE_.phone}</a>`);
+  if(SITE_.email) L.push(`<a href="mailto:${SITE_.email}">${SITE_.email}</a>`);
+  if(SITE_.instagram) L.push(`<a href="https://instagram.com/${SITE_.instagram}" target="_blank" rel="noopener">@${SITE_.instagram}</a>`);
+  return L.join('');
+}
+{ /* voce Info nella barra laterale + contatti e copyright in fondo */
+  const ib = document.createElement('button'); ib.className = 'infobtn';
+  ib.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 9v5M10 6v1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Bio e contatti</span>';
+  ib.onclick = () => { view = 'grid'; nav = {cat:null, proj:null, skip:false, info:true}; render(); };
+  side.appendChild(ib);
+  const d = document.createElement('div'); d.className = 'info';
+  d.innerHTML = `<div class="ct">${contactsHTML()}</div>` + (SITE_.copyright_short ? '<div class="cp"></div>' : '');
+  if(SITE_.copyright_short) d.querySelector('.cp').textContent = SITE_.copyright_short;
+  side.appendChild(d);
+}
+function selectCategory(i){
+  nav = CATEGORIES[i].projects.length === 1 ? {cat:i, proj:0, skip:true} : {cat:i, proj:null, skip:false};
+  render();
+}
+function bg(c, k){ const h = (c*53 + k*31) % 360; return `linear-gradient(145deg,hsl(${h} 30% 82%),hsl(${(h+40)%360} 26% 62%))`; }
+function openWin(){ win.classList.add('on'); render(); }
+function closeWin(){ win.classList.remove('on'); nav = {cat:null, proj:null, skip:false}; }
+
+function render(){
+  body.innerHTML = '';
+  if(nav.info){
+    [...side.querySelectorAll('button')].forEach(b => b.classList.toggle('on', b.classList.contains('infobtn')));
+    $('bBack').hidden = true; $('bBack').parentNode.style.setProperty('--tm', '34px');
+    $('title').textContent = 'Info e contatti';
+    const w = document.createElement('div'); w.className = 'infopage';
+    w.innerHTML = '<h2>Bio</h2><p class="it"></p><p class="en"></p><div class="ct big">' + contactsHTML() + '</div><p class="legal"></p>';
+    w.querySelector('.it').textContent = SITE_.bio_it || '';
+    w.querySelector('.en').textContent = SITE_.bio_en || '';
+    w.querySelector('.legal').textContent = SITE_.copyright || '';
+    if(!SITE_.bio_it) w.querySelector('.it').remove();
+    if(!SITE_.bio_en) w.querySelector('.en').remove();
+    body.appendChild(w); return;
+  }
+  const cat = CATEGORIES[nav.cat];
+  [...side.querySelectorAll('button')].forEach((b,i) => b.classList.toggle('on', i === nav.cat && !nav.info));
+  const noBack = nav.proj === null || nav.skip;
+  $('bBack').hidden = noBack;
+  $('bBack').parentNode.style.setProperty('--tm', noBack ? '34px' : '74px');
+  let items;
+  if(nav.proj === null){
+    $('title').textContent = cat.name;
+    items = cat.projects.map((p,j) => ({
+      name:p.name, kind:fmtDate(p.date), when:fmtDate(p.date), icon:'folder', k:j,
+      cover:p.cover || (p.photos[0] && (p.photos[0].thumb || p.photos[0].src)),
+      open:() => { nav.proj = j; view = 'grid'; render(); }
+    }));
+  } else {
+    const p = cat.projects[nav.proj];
+    $('title').textContent = cat.name + ' › ' + p.name;
+    photos = p.photos.length ? p.photos : Array.from({length:PLACEHOLDERS}, () => null);
+    items = photos.map((ph,k) => ({
+      name: ph ? (ph.name || ph.src.split('/').pop()) : 'foto-' + String(k+1).padStart(2,'0') + '.jpg',
+      kind:'Immagine JPEG', src: ph ? (ph.thumb || ph.src) : null, k, open:() => openLB(k)
+    })).concat((p.extras || []).map((x,k) => ({
+      name:x.name, kind:(x.type || 'link').toUpperCase(), icon:'doc', doc:(x.type || 'link').toUpperCase(), k, open:() => window.open(x.url, '_blank', 'noopener')
+    })));
+  }
+  const wrap = document.createElement('div');
+  wrap.className = view === 'list' ? 'list' : 'grid';
+  if(view === 'list') wrap.insertAdjacentHTML('beforeend', '<div class="row head"><span></span><span>Nome</span><span class="k">' + (nav.proj === null ? 'Data' : 'Tipo') + '</span></div>');
+  items.forEach(it => {
+    const el = document.createElement('button');
+    const pic = it.icon === 'folder' ? null : it;
+    const media = it.src ? `<img src="${it.src}" alt="" loading="lazy" decoding="async">` : '';
+    const style = pic && !it.src ? ` style="background-image:${bg(nav.cat, nav.proj*7 + it.k)}"` : '';
+    if(view === 'list'){
+      el.className = 'row';
+      el.innerHTML = it.icon === 'folder'
+        ? `${coverFolder(it.cover, it.k)}<span class="t">${it.name}</span><span class="k">${it.kind}</span>`
+        : it.icon === 'doc'
+        ? `<span class="ic doc">${it.doc}</span><span class="t">${it.name}</span><span class="k">${it.kind}</span>`
+        : `<span class="ic"${style}>${media}</span><span class="t">${it.name}</span><span class="k">${it.kind}</span>`;
+    } else {
+      el.className = 'item' + (it.icon === 'folder' ? ' fold' : '');
+      el.innerHTML = it.icon === 'folder'
+        ? `${coverFolder(it.cover, it.k)}<span class="t">${it.name}</span><span class="when">${it.when}</span>`
+        : it.icon === 'doc'
+        ? `<span class="thumb doc">${it.doc}</span><span class="t">${it.name}</span>`
+        : `<span class="thumb"${style}>${media}</span><span class="t">${it.name}</span>`;
+    }
+    el.onclick = it.open;
+    wrap.appendChild(el);
+  });
+  body.appendChild(wrap);
+}
+
+/* Rosso chiude, verde cambia vista (elenco/miniature), freccia torna indietro */
+$('bClose').onclick = closeWin;
+$('bView').onclick = () => { view = view === 'list' ? 'grid' : 'list'; render(); };
+$('bBack').onclick = back;
+function back(){
+  if(nav.proj !== null && !nav.skip){ nav.proj = null; view = 'grid'; render(); } else closeWin();
+}
+
+/* Foto ingrandita con frecce */
+const lb = $('lb'), pic = $('lbpic');
+/* la foto nuova sostituisce la vecchia solo quando e' decodificata (al massimo dopo 350 ms): niente lampo bianco */
+let lbTok = 0;
+function showPic(ph, wait){
+  const tok = ++lbTok;
+  if(!ph){ pic.replaceChildren(); pic.classList.remove('real'); pic.style.backgroundImage = bg(nav.cat, nav.proj*7 + idx); return; }
+  const im = new Image(); im.alt = ''; im.decoding = 'async'; im.src = ph.src;
+  const put = () => { if(tok !== lbTok) return; lbTok++; pic.style.backgroundImage = ''; pic.classList.add('real'); pic.replaceChildren(im); };
+  if(!wait || (im.complete && im.naturalWidth)) return put();
+  (im.decode ? im.decode() : Promise.reject()).then(put, put);
+  setTimeout(put, 350);
+}
+function drawLB(wait){
+  const ph = photos[idx];
+  showPic(ph, wait);
+  [1,-1].forEach(d => { const n = photos[(idx + d + photos.length) % photos.length]; if(n){ const p = new Image(); p.src = n.src; if(p.decode) p.decode().catch(() => {}); } });
+  $('lbcap').textContent = (idx+1) + ' / ' + photos.length + (SITE_.copyright_short ? '  ·  ' + SITE_.copyright_short : '');
+  /* anteprime delle foto vicine: ai lati su schermo grande, in una fila sotto sul telefono */
+  const real = photos.length > 1 && photos.every(Boolean);
+  lb.classList.toggle('multi', real);
+  if(real){
+    const at = d => photos[(idx + d + photos.length) % photos.length];
+    $('lbgl').src = at(-1).thumb || at(-1).src; $('lbgr').src = at(1).thumb || at(1).src;
+    const st = $('lbstrip');
+    if(st.dataset.k !== nav.cat + '-' + nav.proj){
+      st.dataset.k = nav.cat + '-' + nav.proj;
+      st.innerHTML = photos.map((x,i) => `<button aria-label="Foto ${i+1}"><img src="${x.thumb || x.src}" alt="" decoding="async"></button>`).join('');
+      [...st.children].forEach((b,i) => b.onclick = () => { idx = i; drawLB(true); });
+    }
+    [...st.children].forEach((b,i) => b.classList.toggle('on', i === idx));
+    const cur = st.children[idx]; if(cur) st.scrollLeft = cur.offsetLeft - st.clientWidth/2 + cur.offsetWidth/2;
+  }
+}
+function openLB(k){ idx = k; drawLB(false); lb.classList.add('on'); }
+function stepLB(d){ idx = (idx + d + photos.length) % photos.length; drawLB(true); }
+$('lbgl').onclick = () => stepLB(-1);
+$('lbgr').onclick = () => stepLB(1);
+$('lbp').onclick = () => stepLB(-1);
+$('lbn').onclick = () => stepLB(1);
+$('lbx').onclick = () => lb.classList.remove('on');
+let tx = null;
+lb.addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true});
+lb.addEventListener('touchend', e => { if(tx===null) return; const d = e.changedTouches[0].clientX - tx; if(Math.abs(d)>50) stepLB(d<0?1:-1); tx = null; });
+document.addEventListener('keydown', e => {
+  const open = lb.classList.contains('on');
+  if(e.key === 'Escape'){ if(open) lb.classList.remove('on'); else if(win.classList.contains('on')) back(); }
+  if(open && e.key === 'ArrowLeft') stepLB(-1);
+  if(open && e.key === 'ArrowRight') stepLB(1);
+});
+
+/* Foto sparse sullo sfondo: ogni visita ne mostra di diverse; un clic apre il progetto */
+const scatter = document.createElement('div'); scatter.className = 'scatter';
+document.body.insertBefore(scatter, document.querySelector('main'));
+let deskMode = 'random';
+try{ deskMode = localStorage.getItem('deskMode') === 'order' ? 'order' : 'random'; }catch(e){}
+function buildScatter(){
+  scatter.innerHTML = '';
+  /* 35 foto in tutto (7 x 5): prima quelle con "desk": true in contenuti.js (max 3 per progetto), poi si completa a rotazione tra i progetti */
+  const shuffle = a => a.sort(() => Math.random() - .5);
+  const lists = [], flagged = [];
+  CATEGORIES.forEach((c,ci) => c.projects.forEach((p,pj) => {
+    const all = p.photos.map(x => ({ci, pj, src:x.thumb || x.src, name:p.name, desk:!!x.desk}));
+    flagged.push(...all.filter(x => x.desk).slice(0,3));
+    lists.push(shuffle(all.filter(x => !x.desk)));
+  }));
+  let picks = shuffle(flagged).slice(0, DESK_N);
+  for(let r = 0; picks.length < DESK_N && r < 40; r++) shuffle(lists).forEach(l => { if(l[r] && picks.length < DESK_N) picks.push(l[r]); });
+  if(!picks.length) return;
+  shuffle(picks);
+  picks.forEach((ph,k) => {
+    const b = document.createElement('button');
+    b.className = 'sp'; b.setAttribute('aria-label', 'Apri ' + ph.name);
+    b.style.setProperty('--dl', (k*.03).toFixed(2) + 's');
+    b._z = Math.floor(Math.random()*90); b._rot = Math.random()*12-6; b._j = [Math.random()*2-1, Math.random()*2-1];
+    b.innerHTML = `<img src="${ph.src}" alt="" decoding="async">`;
+    const im = b.firstChild, ok = () => b.classList.add('ok');
+    if(im.complete) ok(); else { im.onload = im.onerror = ok; setTimeout(ok, 2500); }
+    b.onclick = () => {
+      view = 'grid';
+      nav = CATEGORIES[ph.ci].projects.length === 1 ? {cat:ph.ci, proj:0, skip:true} : {cat:ph.ci, proj:ph.pj, skip:false};
+      openWin();
+    };
+    scatter.appendChild(b);
+  });
+  layoutDesk();
+}
+/* RANDOM = foto sparse e sovrapposte; ORDER = griglia ordinata con spazi bianchi.
+   La griglia e' 7 x 5 (5 x 7 sul telefono): la cella centrale e' sempre dietro la cartella Portfolio. */
+const DESK_N = 35;
+/* ogni clic su RANDOM rimescola posizione, inclinazione e sovrapposizione di tutte le foto */
+function shuffleDesk(){
+  const els = [...scatter.children].sort(() => Math.random() - .5);
+  els.forEach(b => { b._z = Math.floor(Math.random()*90); b._rot = Math.random()*12-6; b._j = [Math.random()*2-1, Math.random()*2-1]; scatter.appendChild(b); });
+}
+function layoutDesk(){
+  const els = [...scatter.children], N = els.length;
+  if(!N) return;
+  const W = innerWidth, H = innerHeight, order = deskMode === 'order';
+  const cols = mq.matches ? 5 : 7, rows = DESK_N / cols;
+  const cw = W/cols, ch = H/rows;
+  /* la larghezza e' sempre quella di RANDOM; ORDER rimpicciolisce con scale(.8/1.2) */
+  const w = Math.round(Math.min(cw*1.2, ch*1.2/1.25)), h = w*1.25, s = order ? .8/1.2 : 1;
+  els.forEach((b,k) => {
+    const r = Math.floor(k/cols), c = k % cols;
+    let x = c*cw + cw/2, y = r*ch + ch/2;
+    if(!order){ x += b._j[0]*cw*.12; y += b._j[1]*ch*.12; }
+    if(b._w !== w){ b.style.width = w + 'px'; b._w = w; }
+    b.style.setProperty('--x', (x - w/2).toFixed(0) + 'px');
+    b.style.setProperty('--y', (y - h/2).toFixed(0) + 'px');
+    b.style.setProperty('--s', s.toFixed(3));
+    b.style.zIndex = order ? 1 : b._z;
+    b.style.setProperty('--r', order ? '0deg' : b._rot.toFixed(1) + 'deg');
+  });
+  document.querySelectorAll('.mode button').forEach(m => m.classList.toggle('on', m.dataset.m === deskMode));
+}
+document.querySelectorAll('.mode button').forEach(m => m.onclick = () => {
+  deskMode = m.dataset.m; try{ localStorage.setItem('deskMode', deskMode); }catch(e){}
+  if(deskMode === 'random') shuffleDesk();
+  layoutDesk();
+});
+buildScatter();
+if(mq.addEventListener) mq.addEventListener('change', layoutDesk);
+let rsz; addEventListener('resize', () => { clearTimeout(rsz); rsz = setTimeout(layoutDesk, 150); });
+</script>
+</body>
+</html>
