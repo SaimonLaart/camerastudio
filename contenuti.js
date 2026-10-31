@@ -98,70 +98,70 @@ const CATEGORIES = [
    {
     "name": "Flowing",
     "date": "2025-07",
-    "cover": "thumb/personal-project/flowing/F_01.jpg",
+    "cover": "thumb/personal-project/flowing/FPP_01.jpg",
     "photos": [
      {
-      "src": "foto/personal-project/flowing/F_01.jpg",
-      "thumb": "thumb/personal-project/flowing/F_01.jpg",
-      "name": "F_01.jpg",
+      "src": "foto/personal-project/flowing/FPP_01.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_01.jpg",
+      "name": "FPP_01.jpg",
       "desk": true
      },
      {
-      "src": "foto/personal-project/flowing/F_02.jpg",
-      "thumb": "thumb/personal-project/flowing/F_02.jpg",
-      "name": "F_02.jpg"
+      "src": "foto/personal-project/flowing/FPP_02.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_02.jpg",
+      "name": "FPP_02.jpg"
      },
      {
-      "src": "foto/personal-project/flowing/F_03.jpg",
-      "thumb": "thumb/personal-project/flowing/F_03.jpg",
-      "name": "F_03.jpg"
+      "src": "foto/personal-project/flowing/FPP_03.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_03.jpg",
+      "name": "FPP_03.jpg"
      },
      {
-      "src": "foto/personal-project/flowing/F_04.jpg",
-      "thumb": "thumb/personal-project/flowing/F_04.jpg",
-      "name": "F_04.jpg"
+      "src": "foto/personal-project/flowing/FPP_04.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_04.jpg",
+      "name": "FPP_04.jpg"
      },
      {
-      "src": "foto/personal-project/flowing/F_05.jpg",
-      "thumb": "thumb/personal-project/flowing/F_05.jpg",
-      "name": "F_05.jpg",
+      "src": "foto/personal-project/flowing/FPP_05.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_05.jpg",
+      "name": "FPP_05.jpg",
       "desk": true
      },
      {
-      "src": "foto/personal-project/flowing/F_06.jpg",
-      "thumb": "thumb/personal-project/flowing/F_06.jpg",
-      "name": "F_06.jpg"
+      "src": "foto/personal-project/flowing/FPP_06.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_06.jpg",
+      "name": "FPP_06.jpg"
      },
      {
-      "src": "foto/personal-project/flowing/F_07.jpg",
-      "thumb": "thumb/personal-project/flowing/F_07.jpg",
-      "name": "F_07.jpg"
+      "src": "foto/personal-project/flowing/FPP_07.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_07.jpg",
+      "name": "FPP_07.jpg"
      },
      {
-      "src": "foto/personal-project/flowing/F_08.jpg",
-      "thumb": "thumb/personal-project/flowing/F_08.jpg",
-      "name": "F_08.jpg"
+      "src": "foto/personal-project/flowing/FPP_08.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_08.jpg",
+      "name": "FPP_08.jpg"
      },
      {
-      "src": "foto/personal-project/flowing/F_09.jpg",
-      "thumb": "thumb/personal-project/flowing/F_09.jpg",
-      "name": "F_09.jpg",
+      "src": "foto/personal-project/flowing/FPP_09.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_09.jpg",
+      "name": "FPP_09.jpg",
       "desk": true
      },
      {
-      "src": "foto/personal-project/flowing/F_10.jpg",
-      "thumb": "thumb/personal-project/flowing/F_10.jpg",
-      "name": "F_10.jpg"
+      "src": "foto/personal-project/flowing/FPP_10.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_10.jpg",
+      "name": "FPP_10.jpg"
      },
      {
-      "src": "foto/personal-project/flowing/F_11.jpg",
-      "thumb": "thumb/personal-project/flowing/F_11.jpg",
-      "name": "F_11.jpg"
+      "src": "foto/personal-project/flowing/FPP_11.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_11.jpg",
+      "name": "FPP_11.jpg"
      },
      {
-      "src": "foto/personal-project/flowing/F_12.jpg",
-      "thumb": "thumb/personal-project/flowing/F_12.jpg",
-      "name": "F_12.jpg"
+      "src": "foto/personal-project/flowing/FPP_12.jpg",
+      "thumb": "thumb/personal-project/flowing/FPP_12.jpg",
+      "name": "FPP_12.jpg"
      }
     ]
    }
@@ -463,70 +463,70 @@ const CATEGORIES = [
    {
     "name": "Alice",
     "date": "2025-10",
-    "cover": "thumb/music/alice/A_01.jpg",
+    "cover": "thumb/music/alice/AM_01.jpg",
     "photos": [
      {
-      "src": "foto/music/alice/A_01.jpg",
-      "thumb": "thumb/music/alice/A_01.jpg",
-      "name": "A_01.jpg",
+      "src": "foto/music/alice/AM_01.jpg",
+      "thumb": "thumb/music/alice/AM_01.jpg",
+      "name": "AM_01.jpg",
       "desk": true
      },
      {
-      "src": "foto/music/alice/A_02.jpg",
-      "thumb": "thumb/music/alice/A_02.jpg",
-      "name": "A_02.jpg"
+      "src": "foto/music/alice/AM_02.jpg",
+      "thumb": "thumb/music/alice/AM_02.jpg",
+      "name": "AM_02.jpg"
      },
      {
-      "src": "foto/music/alice/A_03.jpg",
-      "thumb": "thumb/music/alice/A_03.jpg",
-      "name": "A_03.jpg"
+      "src": "foto/music/alice/AM_03.jpg",
+      "thumb": "thumb/music/alice/AM_03.jpg",
+      "name": "AM_03.jpg"
      },
      {
-      "src": "foto/music/alice/A_04.jpg",
-      "thumb": "thumb/music/alice/A_04.jpg",
-      "name": "A_04.jpg"
+      "src": "foto/music/alice/AM_04.jpg",
+      "thumb": "thumb/music/alice/AM_04.jpg",
+      "name": "AM_04.jpg"
      },
      {
-      "src": "foto/music/alice/A_05.jpg",
-      "thumb": "thumb/music/alice/A_05.jpg",
-      "name": "A_05.jpg",
+      "src": "foto/music/alice/AM_05.jpg",
+      "thumb": "thumb/music/alice/AM_05.jpg",
+      "name": "AM_05.jpg",
       "desk": true
      },
      {
-      "src": "foto/music/alice/A_06.jpg",
-      "thumb": "thumb/music/alice/A_06.jpg",
-      "name": "A_06.jpg"
+      "src": "foto/music/alice/AM_06.jpg",
+      "thumb": "thumb/music/alice/AM_06.jpg",
+      "name": "AM_06.jpg"
      },
      {
-      "src": "foto/music/alice/A_07.jpg",
-      "thumb": "thumb/music/alice/A_07.jpg",
-      "name": "A_07.jpg"
+      "src": "foto/music/alice/AM_07.jpg",
+      "thumb": "thumb/music/alice/AM_07.jpg",
+      "name": "AM_07.jpg"
      },
      {
-      "src": "foto/music/alice/A_08.jpg",
-      "thumb": "thumb/music/alice/A_08.jpg",
-      "name": "A_08.jpg"
+      "src": "foto/music/alice/AM_08.jpg",
+      "thumb": "thumb/music/alice/AM_08.jpg",
+      "name": "AM_08.jpg"
      },
      {
-      "src": "foto/music/alice/A_09.jpg",
-      "thumb": "thumb/music/alice/A_09.jpg",
-      "name": "A_09.jpg",
+      "src": "foto/music/alice/AM_09.jpg",
+      "thumb": "thumb/music/alice/AM_09.jpg",
+      "name": "AM_09.jpg",
       "desk": true
      },
      {
-      "src": "foto/music/alice/A_10.jpg",
-      "thumb": "thumb/music/alice/A_10.jpg",
-      "name": "A_10.jpg"
+      "src": "foto/music/alice/AM_10.jpg",
+      "thumb": "thumb/music/alice/AM_10.jpg",
+      "name": "AM_10.jpg"
      },
      {
-      "src": "foto/music/alice/A_11.jpg",
-      "thumb": "thumb/music/alice/A_11.jpg",
-      "name": "A_11.jpg"
+      "src": "foto/music/alice/AM_11.jpg",
+      "thumb": "thumb/music/alice/AM_11.jpg",
+      "name": "AM_11.jpg"
      },
      {
-      "src": "foto/music/alice/A_12.jpg",
-      "thumb": "thumb/music/alice/A_12.jpg",
-      "name": "A_12.jpg"
+      "src": "foto/music/alice/AM_12.jpg",
+      "thumb": "thumb/music/alice/AM_12.jpg",
+      "name": "AM_12.jpg"
      }
     ]
    },
@@ -608,70 +608,70 @@ const CATEGORIES = [
    {
     "name": "India",
     "date": "2025-02",
-    "cover": "thumb/portrait/india/I_01.jpg",
+    "cover": "thumb/portrait/india/IP_01.jpg",
     "photos": [
      {
-      "src": "foto/portrait/india/I_01.jpg",
-      "thumb": "thumb/portrait/india/I_01.jpg",
-      "name": "I_01.jpg",
+      "src": "foto/portrait/india/IP_01.jpg",
+      "thumb": "thumb/portrait/india/IP_01.jpg",
+      "name": "IP_01.jpg",
       "desk": true
      },
      {
-      "src": "foto/portrait/india/I_02.jpg",
-      "thumb": "thumb/portrait/india/I_02.jpg",
-      "name": "I_02.jpg"
+      "src": "foto/portrait/india/IP_02.jpg",
+      "thumb": "thumb/portrait/india/IP_02.jpg",
+      "name": "IP_02.jpg"
      },
      {
-      "src": "foto/portrait/india/I_03.jpg",
-      "thumb": "thumb/portrait/india/I_03.jpg",
-      "name": "I_03.jpg"
+      "src": "foto/portrait/india/IP_03.jpg",
+      "thumb": "thumb/portrait/india/IP_03.jpg",
+      "name": "IP_03.jpg"
      },
      {
-      "src": "foto/portrait/india/I_04.jpg",
-      "thumb": "thumb/portrait/india/I_04.jpg",
-      "name": "I_04.jpg"
+      "src": "foto/portrait/india/IP_04.jpg",
+      "thumb": "thumb/portrait/india/IP_04.jpg",
+      "name": "IP_04.jpg"
      },
      {
-      "src": "foto/portrait/india/I_05.jpg",
-      "thumb": "thumb/portrait/india/I_05.jpg",
-      "name": "I_05.jpg",
+      "src": "foto/portrait/india/IP_05.jpg",
+      "thumb": "thumb/portrait/india/IP_05.jpg",
+      "name": "IP_05.jpg",
       "desk": true
      },
      {
-      "src": "foto/portrait/india/I_06.jpg",
-      "thumb": "thumb/portrait/india/I_06.jpg",
-      "name": "I_06.jpg"
+      "src": "foto/portrait/india/IP_06.jpg",
+      "thumb": "thumb/portrait/india/IP_06.jpg",
+      "name": "IP_06.jpg"
      },
      {
-      "src": "foto/portrait/india/I_07.jpg",
-      "thumb": "thumb/portrait/india/I_07.jpg",
-      "name": "I_07.jpg"
+      "src": "foto/portrait/india/IP_07.jpg",
+      "thumb": "thumb/portrait/india/IP_07.jpg",
+      "name": "IP_07.jpg"
      },
      {
-      "src": "foto/portrait/india/I_08.jpg",
-      "thumb": "thumb/portrait/india/I_08.jpg",
-      "name": "I_08.jpg"
+      "src": "foto/portrait/india/IP_08.jpg",
+      "thumb": "thumb/portrait/india/IP_08.jpg",
+      "name": "IP_08.jpg"
      },
      {
-      "src": "foto/portrait/india/I_09.jpg",
-      "thumb": "thumb/portrait/india/I_09.jpg",
-      "name": "I_09.jpg",
+      "src": "foto/portrait/india/IP_09.jpg",
+      "thumb": "thumb/portrait/india/IP_09.jpg",
+      "name": "IP_09.jpg",
       "desk": true
      },
      {
-      "src": "foto/portrait/india/I_10.jpg",
-      "thumb": "thumb/portrait/india/I_10.jpg",
-      "name": "I_10.jpg"
+      "src": "foto/portrait/india/IP_10.jpg",
+      "thumb": "thumb/portrait/india/IP_10.jpg",
+      "name": "IP_10.jpg"
      },
      {
-      "src": "foto/portrait/india/I_11.jpg",
-      "thumb": "thumb/portrait/india/I_11.jpg",
-      "name": "I_11.jpg"
+      "src": "foto/portrait/india/IP_11.jpg",
+      "thumb": "thumb/portrait/india/IP_11.jpg",
+      "name": "IP_11.jpg"
      },
      {
-      "src": "foto/portrait/india/I_12.jpg",
-      "thumb": "thumb/portrait/india/I_12.jpg",
-      "name": "I_12.jpg"
+      "src": "foto/portrait/india/IP_12.jpg",
+      "thumb": "thumb/portrait/india/IP_12.jpg",
+      "name": "IP_12.jpg"
      }
     ]
    }
