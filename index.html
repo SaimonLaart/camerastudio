@@ -212,6 +212,8 @@ footer a{color:inherit;text-decoration:none}
 .infopage .ct.big{font-size:clamp(20px,2.6vw,28px);gap:4px;margin:26px 0 30px}
 .infopage .legal{font-size:11px;line-height:1.5;opacity:.8;margin-top:34px;border-top:1px solid var(--line);padding-top:14px}
 .win .infopage .legal{border-top-color:rgba(255,255,255,.3)}
+.side .info .cp a,.infopage .priv a{color:inherit;font-weight:600;text-decoration:none}.side .info .cp a:hover,.infopage .priv a:hover{text-decoration:underline}
+.infopage .priv{font-size:11px;margin:-8px 0 0}
 @media (max-width:640px){.side .info{display:none}.side .infobtn svg{display:none}}
 
 /* Foto a schermo intero: anteprime laterali (desktop) o fila sotto (telefono) */
@@ -396,8 +398,8 @@ function contactsHTML(){
   ib.onclick = () => { view = 'grid'; nav = {cat:null, proj:null, skip:false, info:true}; render(); };
   side.appendChild(ib);
   const d = document.createElement('div'); d.className = 'info';
-  d.innerHTML = `<div class="ct">${contactsHTML()}</div>` + (SITE_.copyright_short ? '<div class="cp"></div>' : '');
-  if(SITE_.copyright_short) d.querySelector('.cp').textContent = SITE_.copyright_short;
+  d.innerHTML = `<div class="ct">${contactsHTML()}</div><div class="cp"><span></span><a href="privacy.html">Privacy</a></div>`;
+  d.querySelector('.cp span').textContent = SITE_.copyright_short ? SITE_.copyright_short + ' · ' : '';
   side.appendChild(d);
 }
 function selectCategory(i){
@@ -415,7 +417,7 @@ function render(){
     $('bBack').hidden = true; $('bBack').parentNode.style.setProperty('--tm', '34px');
     $('title').textContent = 'Info e contatti';
     const w = document.createElement('div'); w.className = 'infopage';
-    w.innerHTML = '<h2>Bio</h2><p class="it"></p><p class="en"></p><div class="ct big">' + contactsHTML() + '</div><p class="legal"></p>';
+    w.innerHTML = '<h2>Bio</h2><p class="it"></p><p class="en"></p><div class="ct big">' + contactsHTML() + '</div><p class="legal"></p><p class="priv"><a href="privacy.html">Privacy</a></p>';
     w.querySelector('.it').textContent = SITE_.bio_it || '';
     w.querySelector('.en').textContent = SITE_.bio_en || '';
     w.querySelector('.legal').textContent = SITE_.copyright || '';
